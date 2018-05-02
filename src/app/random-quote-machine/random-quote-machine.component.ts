@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 
 export interface randomResponse {
   author: string;
@@ -33,12 +33,20 @@ export class RandomQuoteMachineComponent implements OnInit {
 
   makeRequest(): void {
     this.loading = true;
-    this.http.request('http://quotes.stormconsultancy.co.uk/random.json')
+
+    const headers: Headers = new Headers();
+    headers.append('X-Mashape-Key', 'OivH71yd3tmshl9YKzFH7BTzBVRQp1RaKLajsnafgL2aPsfP9V');
+
+    const opts: RequestOptions = new RequestOptions();
+    opts.headers = headers;
+
+    this.http.get('https://andruxnet-random-famous-quotes.p.mashape.com/cat=', opts)
     .subscribe((res: Response) => {
       this.data = res.json();
       this.loading = false;
 
       this.twitter_link = `https://twitter.com/intent/tweet?hashtags=quotes&related=encofreecodecamp&text=${encodeURI(this.data.quote + ' - ' + this.data.author)}`;
+      
       var color = Math.floor(Math.random() * colors.length);
       $('html body').animate({
         backgroundColor: colors[color]
